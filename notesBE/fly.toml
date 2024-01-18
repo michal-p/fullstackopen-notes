@@ -1,10 +1,10 @@
-# fly.toml app configuration file generated for notesbe-fso-weathered-snowflake-7946 on 2024-01-17T22:36:57+01:00
+# fly.toml app configuration file generated for notesbe-fso on 2024-01-18T16:20:18+01:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = "notesbe-fso-weathered-snowflake-7946"
-primary_region = "waw"
+app = "notesbe-fso"
+primary_region = "ams"
 
 [build]
 
