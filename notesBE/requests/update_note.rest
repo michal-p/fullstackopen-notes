@@ -1,0 +1,7 @@
+PUT http://localhost:3001/api/notes/65b19780412ad841bca7ee2a
+content-type: application/json
+
+{
+    "content": "jojo updated",
+    "important": "false"
+}
