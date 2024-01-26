@@ -14,8 +14,7 @@ const App = (props) => {
 
   useEffect(() => {
     console.log('effect')
-    noteService
-      .getAll()
+    noteService.getAll()
       .then(initialNotes => {
         notificationMessage(`Saved notes were loaded`, 'success')
         setNotes(initialNotes)
@@ -31,17 +30,14 @@ const App = (props) => {
       important: Math.random() < 0.5,
     }
 
-    noteService
-      .create(noteObject)
+    noteService.create(noteObject)
       .then(returnedNote => {
         notificationMessage(`Added ${returnedNote.content}`, 'success')
         setNotes(notes.concat(returnedNote))
         setNewNote('')
       }).catch(error => {
         notificationMessage(`Note '${noteObject.content}' was not created`, 'error')
-        setNewNote(noteObject.content)
       })
-
   }
 
   const handleNoteChange = (event) => {
@@ -53,22 +49,32 @@ const App = (props) => {
   const notificationMessage = (message, type) => {
     setTypeMessage(type)
     setErrorMessage(message)
-    setTimeout(() => {
-      setErrorMessage(null)
-    }, 5000)
+    setTimeout(() => setErrorMessage(null), 5000)
   }
 
   const toggleImportanceOf = (id) => {
     const note = notes.find(n => n.id === id)
     const changedNote = { ...note, important: !note.important }
-    noteService
-      .update(id, changedNote)
+    noteService.update(id, changedNote)
       .then(returnedNote => {
         notificationMessage(`Important property was updated ${note.content}`)
         setNotes(notes.map(n => n.id !== id ? n : returnedNote))
       })
       .catch(error => {
         notificationMessage(`Note '${note.content}' was already removed from server`, 'error')
+        setNotes(notes.filter(n => n.id !== id))
+      })
+  }
+
+  const deleteNote = (id, content) => {
+    noteService.remove(id)
+      .then((response) => {
+        console.log('delete Note response :', response);
+        setNotes(notes.filter(n => n.id !== id))
+        notificationMessage(`Deleted ${content}`, 'success')
+      }).catch(error => {
+        console.log('delete Note error :', error);
+        notificationMessage(`The note '${content}' was already deleted from server before.`, 'error')
         setNotes(notes.filter(n => n.id !== id))
       })
   }
@@ -88,6 +94,7 @@ const App = (props) => {
             key={note.id} 
             note={note}
             toggleImportance={() => toggleImportanceOf(note.id)}
+            onDelete={deleteNote}
           />
         )}
       </ul>
