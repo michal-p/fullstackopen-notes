@@ -26,10 +26,10 @@ app.post('/api/notes', (request, response, next) => {
   })
 
   note.save()
-  .then(savedNote => {
-    response.json(savedNote)
-  })
-  .catch(error => next(error))
+    .then(savedNote => {
+      response.json(savedNote)
+    })
+    .catch(error => next(error))
 })
 
 app.get('/', (request, response) => {
@@ -49,7 +49,7 @@ app.delete('/api/notes/:id', (request, response, next) => {
   Note.findByIdAndDelete(request.params.id)
     .then(result => {
       //The result callback parameter could be used for checking if a resource was actually deleted, and we could use that information for returning different status codes
-      console.log('DELETE result :', result);
+      console.log('DELETE result :', result)
       response.status(204).end()
     })
     .catch(error => next(error))
