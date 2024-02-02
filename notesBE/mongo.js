@@ -8,7 +8,7 @@ if (process.argv.length < 3) {
 const password = process.argv[2]
 
 const url =
-  `mongodb+srv://miso:${password}@fullstackopen2023-phone.osikgqs.mongodb.net/noteApp?retryWrites=true&w=majority`
+  `mongodb+srv://miso:${password}@fullstackopen2023-phone.osikgqs.mongodb.net/testNoteApp?retryWrites=true&w=majority`
 
 mongoose.set('strictQuery', false)
 mongoose.connect(url)
@@ -28,7 +28,7 @@ const Note = mongoose.model('Note', noteSchema)
 // })
 
 const note = new Note({
-  content: 'HTML is Easy NEW 6',
+  content: 'HTML is Easy 2',
   important: true,
 })
 
