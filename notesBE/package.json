@@ -7,12 +7,12 @@
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "dev:debug": "nodemon --inspect index.js",
+    "test": "cross-env NODE_ENV=test node --test",
     "build:ui": "rm -rf dist && cd ../notesFE/ && npm run build && cp -r dist ../notesBE",
     "deploy": "fly deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
     "logs:prod": "fly logs",
-    "lint": "eslint .",
-    "test": "cross-env NODE_ENV=test jest --verbose --runInBand"
+    "lint": "eslint ."
   },
   "author": "Michal Puchy",
   "license": "MIT",
@@ -27,7 +27,6 @@
   "devDependencies": {
     "@flydotio/dockerfile": "^0.5.0",
     "eslint": "^8.56.0",
-    "jest": "^29.7.0",
     "nodemon": "^3.0.2",
     "supertest": "^6.3.4"
   }
