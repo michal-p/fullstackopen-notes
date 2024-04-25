@@ -15,6 +15,13 @@ describe('When there is initially some notes saved', () => {
   beforeEach(async () => {
     await Note.deleteMany({})
     await Note.insertMany(helper.initialNotes)
+
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash(process.env.TEST_ROOT_USER_PASSWORD, 10)
+    const user = new User({ username: 'root', passwordHash })
+
+    await user.save()
   })
 
   test('notes are returned as json', async () => {
@@ -70,10 +77,14 @@ describe('When there is initially some notes saved', () => {
   })
 
   describe('addition of a new note', () => {
+
     test('succeeds with valid data', async () => {
+
+      const rootUser = await helper.rootUserInDb()
       const newNote = {
         content: 'async/await simplifies making async calls',
         important: true,
+        userId: rootUser.id
       }
 
       await api
@@ -90,8 +101,10 @@ describe('When there is initially some notes saved', () => {
     })
 
     test('fails with status code 400 if data invalid', async () => {
+      const rootUser = await helper.rootUserInDb()
       const newNote = {
-        important: true
+        important: true,
+        userId: rootUser.id
       }
 
       await api
@@ -140,7 +153,7 @@ describe('when there is initially one user in db', () => {
     const newUser = {
       username: 'mluukkai',
       name: 'Matti Luukkainen',
-      password: 'salainenQ$1',
+      password: process.env.TEST_ROOT_USER_PASSWORD,
     }
 
     await api
@@ -162,7 +175,7 @@ describe('when there is initially one user in db', () => {
     const newUser = {
       username: 'root',
       name: 'Superuser',
-      password: 'salainenQ$1',
+      password: process.env.TEST_ROOT_USER_PASSWORD,
     }
 
     const result = await api
@@ -183,7 +196,7 @@ describe('when there is initially one user in db', () => {
 
     const newUserName = {
       username: 'bu',
-      password: 'salainenQ$1',
+      password: process.env.TEST_ROOT_USER_PASSWORD,
     }
 
     const result = await api
@@ -203,7 +216,7 @@ describe('when there is initially one user in db', () => {
 
     const newUserName = {
       username: 'zmrzlina9012345678901',
-      password: 'salainenQ$1',
+      password: process.env.TEST_ROOT_USER_PASSWORD,
     }
 
     const result = await api
@@ -223,7 +236,7 @@ describe('when there is initially one user in db', () => {
 
     const newUserName = {
       username: 'bu$',
-      password: 'salainenQ$1',
+      password: process.env.TEST_ROOT_USER_PASSWORD,
     }
 
     const result = await api

@@ -1,8 +1,10 @@
 const notesRouter = require('express').Router()
+const User = require('../models/user')
 const Note = require('../models/note')
 
 notesRouter.get('/', async (request, response) => {
-  const notes = await Note.find({})
+  const notes = await Note.find({}).populate('user', { username: 1, name: 1 })
+
   response.json(notes)
 })
 
@@ -17,13 +19,22 @@ notesRouter.get('/:id', async (request, response) => {
 
 notesRouter.post('/', async (request, response) => {
   const body = request.body
+  /**
+   * todo: Saving a note with a user reference without validating the existence of the user
+   * todo: or handling the case where the user is not found could lead to orphan notes or runtime errors.
+   */
+  const user = await User.findById(body.userId)
 
   const note = new Note({
     content: body.content,
     important: body.important || false,
+    user: user.id
   })
 
   const savedNote = await note.save()
+  user.notes = user.notes.concat(savedNote._id)
+  await user.save()
+
   response.status(201).json(savedNote)
 })
 
