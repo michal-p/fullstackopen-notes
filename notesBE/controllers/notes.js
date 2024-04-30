@@ -1,6 +1,7 @@
 const notesRouter = require('express').Router()
 const User = require('../models/user')
 const Note = require('../models/note')
+const jwt = require('jsonwebtoken')
 
 notesRouter.get('/', async (request, response) => {
   const notes = await Note.find({}).populate('user', { username: 1, name: 1 })
@@ -17,18 +18,32 @@ notesRouter.get('/:id', async (request, response) => {
   }
 })
 
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  console.log('getTokenFrom authorization :', authorization)
+
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
+
 notesRouter.post('/', async (request, response) => {
   const body = request.body
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
   /**
    * todo: Saving a note with a user reference without validating the existence of the user
    * todo: or handling the case where the user is not found could lead to orphan notes or runtime errors.
    */
-  const user = await User.findById(body.userId)
+  const user = await User.findById(decodedToken.id)
 
   const note = new Note({
     content: body.content,
-    important: body.important || false,
-    user: user.id
+    important: body.important === undefined ? false : body.important,
+    user: user.id //* Is it possible to use also user._id, does not matter in this case
   })
 
   const savedNote = await note.save()

@@ -1,0 +1,9 @@
+POST http://localhost:3001/api/notes
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InN1cGVyIiwiaWQiOiI2NjJmN2YyZDIyZGRiOTI1N2QzODBhMjUiLCJpYXQiOjE3MTQ0NzM2ODF9.H0g1SAkRzoWmXBBcyL_SsEL0blOulOLTyAhBs-z4hp4
+
+{
+  "content": "nova sprava od super maria 4",
+  "important": true,
+  "userId": "662f7f2d22ddb9257d380a25"
+}
