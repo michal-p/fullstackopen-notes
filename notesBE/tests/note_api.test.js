@@ -7,6 +7,7 @@ const api = supertest(app)
 const bcrypt = require('bcrypt')
 
 const helper = require('./test_helper')
+const createToken = require('../utils/functions').createToken
 
 const User = require('../models/user')
 const Note = require('../models/note')
@@ -81,7 +82,7 @@ describe('When there is initially some notes saved', () => {
     test('succeeds with valid data', async () => {
 
       const rootUser = await helper.rootUserInDb()
-      const token = helper.createToken(rootUser)
+      const token = createToken(rootUser)
       const newNote = {
         content: 'async/await simplifies making async calls',
         important: true,
@@ -105,7 +106,7 @@ describe('When there is initially some notes saved', () => {
     test('fails with status code 400 if data invalid', async () => {
 
       const rootUser = await helper.rootUserInDb()
-      const token = helper.createToken(rootUser)
+      const token = createToken(rootUser)
       const newNote = {
         important: true,
         userId: rootUser.id
