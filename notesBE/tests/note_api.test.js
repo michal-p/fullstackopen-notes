@@ -85,8 +85,7 @@ describe('When there is initially some notes saved', () => {
       const token = createToken(rootUser)
       const newNote = {
         content: 'async/await simplifies making async calls',
-        important: true,
-        userId: rootUser.id
+        important: true
       }
 
       await api
@@ -108,8 +107,7 @@ describe('When there is initially some notes saved', () => {
       const rootUser = await helper.rootUserInDb()
       const token = createToken(rootUser)
       const newNote = {
-        important: true,
-        userId: rootUser.id
+        important: true
       }
 
       await api
