@@ -11,12 +11,9 @@ import Footer from './components/Footer'
 
 const App = (props) => {
   const [notes, setNotes] = useState([])
-  const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState('some error happened...')
   const [typeMessage, setTypeMessage] = useState('success')
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -39,18 +36,11 @@ const App = (props) => {
     }
   }, [])//The empty array as the parameter of the effect ensures that the effect is executed only when the component is rendered for the first time.
 
-  const addNote = (event) => {
-    event.preventDefault()
-    const noteObject = {
-      content: newNote,
-      important: Math.random() < 0.5,
-    }
-
+  const addNote = (noteObject) => {
     noteService.create(noteObject)
       .then(returnedNote => {
         notificationMessage(`Added ${returnedNote.content}`, 'success')
         setNotes(notes.concat(returnedNote))
-        setNewNote('')
       }).catch(error => {
         notificationMessage(`Note '${noteObject.content}' was not created`, 'error')
       })
@@ -95,16 +85,13 @@ const App = (props) => {
       })
   }
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    
+  const handleLogin = async (loginObject) => {
     try {
-      const user = await loginService.login({ username, password })
-      window.localStorage.setItem('loggedNoteappUser', JSON.stringify(user)) 
-      noteService.setToken(user.token)
-      setUser(user)
-      setUsername('')
-      setPassword('')
+      const loggedUser = await loginService.login(loginObject)
+      window.localStorage.setItem('loggedNoteappUser', JSON.stringify(loggedUser)) 
+      noteService.setToken(loggedUser.token)
+      setUser(loggedUser)
+      notificationMessage(`User ${loggedUser.name} logged in.`, 'success')
     } catch (exception) {
       notificationMessage('Wrong credentials', 'error')
     }
@@ -115,20 +102,13 @@ const App = (props) => {
       <h1>Notes</h1>
       <Notification message={errorMessage} typeMessage={typeMessage} />
 
-      {!user && loginForm()}
       {user === null ?
-       <Togglable buttonLabel='login'>
-        <LoginForm
-          username={username}
-          password={password}
-          handleUsernameChange={({ target }) => setUsername(target.value)}
-          handlePasswordChange={({ target }) => setPassword(target.value)}
-          handleSubmit={handleLogin}
-        />
+      <Togglable buttonLabel='login'>
+        <LoginForm handleLogin={ handleLogin } />
       </Togglable> :
         <div>
           <p>{user.name} logged-in</p>
-          <NoteForm addNote={addNote} newNote={newNote} handleNoteChange={handleNoteChange}/>
+          <NoteForm createNote={addNote} />
           <button onClick={
               () => {
                 window.localStorage.removeItem('loggedNoteappUser')
