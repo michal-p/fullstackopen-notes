@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import Note from './components/Note'
-import Login from './components/Login'
-import NoteCreateForm from './components/NoteCreateForm'
+import LoginForm from './components/LoginForm'
+import NoteForm from './components/NoteForm'
+import Togglable from './components/Togglable'
 import noteService from './services/notes'
 import loginService from './services/login'
 import './index.css'
@@ -114,17 +115,20 @@ const App = (props) => {
       <h1>Notes</h1>
       <Notification message={errorMessage} typeMessage={typeMessage} />
 
+      {!user && loginForm()}
       {user === null ?
-        <Login 
-          password={password}
+       <Togglable buttonLabel='login'>
+        <LoginForm
           username={username}
-          handleLogin={handleLogin}
-          setPassword={setPassword}
-          setUsername={setUsername}
-        /> :
+          password={password}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+          handleSubmit={handleLogin}
+        />
+      </Togglable> :
         <div>
           <p>{user.name} logged-in</p>
-          <NoteCreateForm addNote={addNote} newNote={newNote} handleNoteChange={handleNoteChange}/>
+          <NoteForm addNote={addNote} newNote={newNote} handleNoteChange={handleNoteChange}/>
           <button onClick={
               () => {
                 window.localStorage.removeItem('loggedNoteappUser')
