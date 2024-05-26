@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Note from './components/Note'
 import LoginForm from './components/LoginForm'
 import NoteForm from './components/NoteForm'
@@ -15,9 +15,10 @@ const App = (props) => {
   const [errorMessage, setErrorMessage] = useState('some error happened...')
   const [typeMessage, setTypeMessage] = useState('success')
   const [user, setUser] = useState(null)
+  const noteFormRef = useRef()
+  const localStorageUserLoggedKey = 'loggedNoteappUser'
 
   useEffect(() => {
-    console.log('effect')
     noteService.getAll()
       .then(initialNotes => {
         notificationMessage(`Saved notes were loaded`, 'success')
@@ -28,7 +29,7 @@ const App = (props) => {
   }, [])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+    const loggedUserJSON = window.localStorage.getItem(localStorageUserLoggedKey)
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
@@ -37,17 +38,16 @@ const App = (props) => {
   }, [])//The empty array as the parameter of the effect ensures that the effect is executed only when the component is rendered for the first time.
 
   const addNote = (noteObject) => {
-    noteService.create(noteObject)
+    noteFormRef.current.toggleVisibility()
+    noteService
+      .create(noteObject)
       .then(returnedNote => {
         notificationMessage(`Added ${returnedNote.content}`, 'success')
         setNotes(notes.concat(returnedNote))
       }).catch(error => {
         notificationMessage(`Note '${noteObject.content}' was not created`, 'error')
+        if (error.response.status == 401) handleLogout()
       })
-  }
-
-  const handleNoteChange = (event) => {
-    setNewNote(event.target.value)
   }
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important)
@@ -88,7 +88,7 @@ const App = (props) => {
   const handleLogin = async (loginObject) => {
     try {
       const loggedUser = await loginService.login(loginObject)
-      window.localStorage.setItem('loggedNoteappUser', JSON.stringify(loggedUser)) 
+      window.localStorage.setItem(localStorageUserLoggedKey, JSON.stringify(loggedUser)) 
       noteService.setToken(loggedUser.token)
       setUser(loggedUser)
       notificationMessage(`User ${loggedUser.name} logged in.`, 'success')
@@ -97,26 +97,29 @@ const App = (props) => {
     }
   }
 
+    const handleLogout = () => {
+      window.localStorage.removeItem(localStorageUserLoggedKey)
+      setUser(null)
+    }
+
   return (
     <div>
       <h1>Notes</h1>
       <Notification message={errorMessage} typeMessage={typeMessage} />
 
-      {user === null ?
-      <Togglable buttonLabel='login'>
-        <LoginForm handleLogin={ handleLogin } />
-      </Togglable> :
-        <div>
-          <p>{user.name} logged-in</p>
-          <NoteForm createNote={addNote} />
-          <button onClick={
-              () => {
-                window.localStorage.removeItem('loggedNoteappUser')
-                setUser(null)
-              }
-            }
-          >Logout</button>
-        </div>
+      { user === null
+        ?
+          <Togglable buttonLabel='login'>
+            <LoginForm handleLogin={ handleLogin } />
+          </Togglable>
+        :
+          <div>
+            <p>{user.name} logged-in</p>
+            <Togglable buttonLabel='new note' ref={noteFormRef}>
+              <NoteForm createNote={addNote} />
+            </Togglable>           
+            <button onClick={handleLogout}>Logout</button>
+          </div>
       }
 
       <h2>Notes</h2>
