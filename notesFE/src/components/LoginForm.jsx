@@ -1,17 +1,17 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const LoginForm = ({ handleLogin }) => {
-    const [username, setUsername] = useState('') 
-    const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
-    const handleSubmit = event => {
-      event.preventDefault()
-      handleLogin({ username, password })
-      
-      setPassword('')
-      setUsername('')
-    }
-    
+  const handleSubmit = event => {
+    event.preventDefault()
+    handleLogin({ username, password })
+    setPassword('')
+    setUsername('')
+  }
+
   return (
     <div>
       <h2>Login</h2>
@@ -31,11 +31,15 @@ const LoginForm = ({ handleLogin }) => {
             value={ password }
             onChange={ event => { setPassword(event.target.value) } }
           />
-      </div>
+        </div>
         <button type="submit">login</button>
       </form>
     </div>
   )
+}
+
+LoginForm.propTypes = {
+  handleLogin: PropTypes.func.isRequired,
 }
 
 export default LoginForm

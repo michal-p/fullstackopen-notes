@@ -21,10 +21,10 @@ const App = (props) => {
   useEffect(() => {
     noteService.getAll()
       .then(initialNotes => {
-        notificationMessage(`Saved notes were loaded`, 'success')
+        notificationMessage('Saved notes were loaded', 'success')
         setNotes(initialNotes)
       }).catch(error => {
-        notificationMessage(`Problem to load saved message from server`, 'error')
+        notificationMessage('Problem to load saved message from server', 'error')
       })
   }, [])
 
@@ -46,7 +46,7 @@ const App = (props) => {
         setNotes(notes.concat(returnedNote))
       }).catch(error => {
         notificationMessage(`Note '${noteObject.content}' was not created`, 'error')
-        if (error.response.status == 401) handleLogout()
+        if (error.response.status === 401) handleLogout()
       })
   }
 
@@ -75,11 +75,9 @@ const App = (props) => {
   const deleteNote = (id, content) => {
     noteService.remove(id)
       .then((response) => {
-        console.log('delete Note response :', response);
         setNotes(notes.filter(n => n.id !== id))
         notificationMessage(`Deleted ${content}`, 'success')
       }).catch(error => {
-        console.log('delete Note error :', error);
         notificationMessage(`The note '${content}' was already deleted from server before.`, 'error')
         setNotes(notes.filter(n => n.id !== id))
       })
@@ -88,7 +86,7 @@ const App = (props) => {
   const handleLogin = async (loginObject) => {
     try {
       const loggedUser = await loginService.login(loginObject)
-      window.localStorage.setItem(localStorageUserLoggedKey, JSON.stringify(loggedUser)) 
+      window.localStorage.setItem(localStorageUserLoggedKey, JSON.stringify(loggedUser))
       noteService.setToken(loggedUser.token)
       setUser(loggedUser)
       notificationMessage(`User ${loggedUser.name} logged in.`, 'success')
@@ -97,10 +95,10 @@ const App = (props) => {
     }
   }
 
-    const handleLogout = () => {
-      window.localStorage.removeItem(localStorageUserLoggedKey)
-      setUser(null)
-    }
+  const handleLogout = () => {
+    window.localStorage.removeItem(localStorageUserLoggedKey)
+    setUser(null)
+  }
 
   return (
     <div>
@@ -109,17 +107,17 @@ const App = (props) => {
 
       { user === null
         ?
-          <Togglable buttonLabel='login'>
-            <LoginForm handleLogin={ handleLogin } />
-          </Togglable>
+        <Togglable buttonLabel='login'>
+          <LoginForm handleLogin={ handleLogin } />
+        </Togglable>
         :
-          <div>
-            <p>{user.name} logged-in</p>
-            <Togglable buttonLabel='new note' ref={noteFormRef}>
-              <NoteForm createNote={addNote} />
-            </Togglable>           
-            <button onClick={handleLogout}>Logout</button>
-          </div>
+        <div>
+          <p>{user.name} logged-in</p>
+          <Togglable buttonLabel='new note' ref={noteFormRef}>
+            <NoteForm createNote={addNote} />
+          </Togglable>
+          <button onClick={handleLogout}>Logout</button>
+        </div>
       }
 
       <h2>Notes</h2>
@@ -130,9 +128,9 @@ const App = (props) => {
         </button>
       </div>
       <ul>
-        {notesToShow.map(note => 
-          <Note 
-            key={note.id} 
+        {notesToShow.map(note =>
+          <Note
+            key={note.id}
             note={note}
             toggleImportance={() => toggleImportanceOf(note.id)}
             onDelete={deleteNote}
@@ -145,4 +143,4 @@ const App = (props) => {
   )
 }
 
-export default App 
+export default App
