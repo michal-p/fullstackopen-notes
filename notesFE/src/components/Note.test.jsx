@@ -30,7 +30,7 @@ test('clicking the button calls event handler once', async () => {
   )
 
   const user = userEvent.setup()
-  const button = screen.getByText('not important', { exact: false }) //Or const element = await screen.findByText('Does not work anymore :('); careful it returns promise!
+  const button = screen.getByText('make not important', { exact: false }) //Or const element = await screen.findByText('Does not work anymore :('); careful it returns promise!
   await user.click(button)
 
   expect(mockHandler.mock.calls).toHaveLength(1)
