@@ -9,6 +9,7 @@ const createNote = async (page, content) => {
   await page.getByRole('button', { name: 'new note' }).click()
   await page.getByTestId('newNote').fill(content)
   await page.getByRole('button', { name: 'save' }).click()
+  await page.getByText(content).first().waitFor() //Wait server respond before rerender the browser and prevent lost messages. This helps to protect unreliable tests.
 }
 
 export { loginWith, createNote }

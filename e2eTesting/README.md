@@ -28,3 +28,13 @@ And check out the following files:
   - ./playwright.config.js - Playwright Test configuration
 
 Visit https://playwright.dev/docs/intro for more information. ✨
+
+DEBUG:
+
+  npm test -- -g'importance can be changed' --debug -> run test with particular name
+  await page.pause() -> break point
+
+  Almost the same as UI mode is use of the Playwright's Trace Viewer https://playwright.dev/docs/trace-viewer-intro. The idea is that a "visual trace" of the tests is saved, which can be viewed if necessary after the tests have been completed. 
+  A trace is saved by running the tests as follows: npm run test -- --trace on
+  If necessary, Trace can be viewed with the command: npx playwright show-report
+
