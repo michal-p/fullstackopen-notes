@@ -107,20 +107,18 @@ const App = (props) => {
 
       { user === null
         ?
-        <Togglable buttonLabel='login'>
+        <Togglable buttonLabel='log in'>
           <LoginForm handleLogin={ handleLogin } />
         </Togglable>
         :
         <div>
-          <p>{user.name} logged-in</p>
+          <p>logged-in</p>
           <Togglable buttonLabel='new note' ref={noteFormRef}>
             <NoteForm createNote={addNote} />
           </Togglable>
           <button onClick={handleLogout}>Logout</button>
         </div>
       }
-
-      <h2>Notes</h2>
 
       <div>
         <button onClick={() => setShowAll(!showAll)}>

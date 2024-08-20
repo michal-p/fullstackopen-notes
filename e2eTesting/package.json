@@ -1,0 +1,21 @@
+{
+  "name": "e2etesting",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "npm run test -- --ui",
+    "test:trace": "npm run test -- --trace on",
+    "test:report": "playwright show-report",
+    "test:chromium": "npm test -- --project chromium",
+    "test:codegen": "npx playwright codegen http://localhost:5174/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.44.1",
+    "@types/node": "^20.14.6"
+  }
+}
